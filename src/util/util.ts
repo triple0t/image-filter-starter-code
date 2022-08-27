@@ -52,13 +52,3 @@ export const isUrlValid = (urlStringInput: string) => {
     return false; 
   }
 }
-
-/**
- * Returns a new promise that is executed after the delay
- * @param {String} data - The data to return in the resolved promise
- * @param {Number} delay - The millseconds delay
- * @returns {Promise<string>} A new promise
- */
-export const delayedPromise = (data: string, delay: number) => new Promise<string>((resolve) => {
-  setTimeout((res) => resolve(res), delay, data);
-});

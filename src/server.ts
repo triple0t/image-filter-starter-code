@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles, isUrlValid, delayedPromise} from './util/util';
+import { filterImageFromURL, deleteLocalFiles, isUrlValid } from './util/util';
 
 (async () => {
 
@@ -29,33 +29,36 @@ import {filterImageFromURL, deleteLocalFiles, isUrlValid, delayedPromise} from '
 
   /**************************************************************************** */
 
+  const validRequestFormat = 'try GET /filteredimage?image_url=URL_TO_IMAGE_HERE';
 
-  app.get('/filteredimage', (req: Request, res: Response) => {
-    const queryParamKeys = Object.keys(req.query);
+
+  app.get('/filteredimage', async ( req: Request, res: Response ) => {
+
+    const queryParamKeys: string[] = Object.keys(req.query);
     if (!req.query || queryParamKeys.length === 0 || !queryParamKeys.includes('image_url')) {
-      res.status(400).send('Image url not provided');
+      // request query param does not include image_url
+      res.status(400).send(`Image url not provided. Please include image_url. e.g. ${validRequestFormat}`);
       return;
     }
 
     const imageUrl = String(req.query.image_url);
 
     if (!isUrlValid(imageUrl)) {
+      // request query param image_url does not contain a valid URL. 
       res.status(400).send('The provided Image url is not valid');
       return;
     }
 
-    filterImageFromURL(imageUrl)
-    .then((data) => {
-      res.sendFile(data);
-      // clear file after a few seconds
-      return delayedPromise(data, 5000);
-    })
-    .then((firePath) => {
-      return deleteLocalFiles([firePath]);
-    })
-    .catch((err) => {
-      res.status(400).send(`Image could not be processed. ${err.toString()}`);
-    });
+    try {
+      const firePath: string = await filterImageFromURL(imageUrl);
+
+      res.sendFile(firePath, async () => {
+        // clear file after request
+        await deleteLocalFiles([firePath]);
+      });
+    } catch (error) {
+      res.status(400).send(`Image could not be processed. ${error.toString()}`); 
+    }
 
   });
 
@@ -63,8 +66,8 @@ import {filterImageFromURL, deleteLocalFiles, isUrlValid, delayedPromise} from '
   
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
-    res.send("try GET /filteredimage?image_url={{}}")
+  app.get( '/', async ( req: Request, res: Response ) => {
+    res.send(validRequestFormat);
   } );
   
 
