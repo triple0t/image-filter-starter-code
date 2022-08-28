@@ -1,5 +1,19 @@
 # Udagram Image Filtering Microservice
 
+========================================================================================================================
+
+**Quick note**
+
+Elastic beanstalk endpoint: http://seun-image-filter-starter-code.us-east-1.elasticbeanstalk.com
+
+Custom Sub-domain: http://www.image-filter.oluwaseun.com.ng
+
+An Example request: 
+* Using EBS: http://seun-image-filter-starter-code.us-east-1.elasticbeanstalk.com/filteredimage?image_url=https://oluwaseun.com.ng/wedding/img/omowunmi_and_oluwaseun_compress.jpg
+* Using subdomain: http://www.image-filter.oluwaseun.com.ng/filteredimage?image_url=https://oluwaseun.com.ng/wedding/img/omowunmi_and_oluwaseun_compress.jpg
+
+========================================================================================================================
+
 Udagram is a simple cloud application developed alongside the Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice.
 
 The project is split into three parts:
